@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Database
+db/
+.idea/
+
 # Distribution / packaging
 .Python
 build/
@@ -72,6 +76,10 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# IPython
+profile_default/
+ipython_config.py
+
 # pyenv
 .python-version
 
@@ -102,3 +110,5 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.dmypy.json
+dmypy.json
