@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ subject.name }}
+{% endblock %}
+
+
+{% block content %}
+    <h5>Subject Information: </h5>
+    <h3>{{ subject.name }}</h3>
+    <h5>Parent Subject:</h5>
+    {% for parent in parents %}
+        <h2><a href="/subject/{{ parent.id }}">{{ parent.name }}</a></h2>
+    {% endfor %}
+    <h5>Children Subjects:</h5>
+    {% for child in children %}
+        <h2><a href="/subject/{{ child.id }}">{{ child.name }}</a></h2>
+    {% endfor %}
+    <div class="row">
+    <div class="col-9">
+<h1>Articles:</h1>
+
+    {% for article in articles %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/article/{{ article.id }}">{{ article.title }}</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ article.author }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted"><a href="/user/{{ article.user.id }}">
+                {{ article.user.email[0] + '***' +
+                        article.user.email[article.user.email.index('@'):]}}</a></h6>
+                <h6>subject: <a href="/subject/{{ article.subject.id }}">{{ article.subject.name }}</a></h6>
+                <p class="card-text">abstract: {{ article.abstract }}</p>
+                <p class="card-text">highlight part: {{ article.highlight_part }}</p>
+                <a href="/article/{{ article.id }}/pdf">Download PDF</a>
+                <span class="text-muted ml-5">date: {{ article.date }}</span>
+                <span class="text-muted ml-5">score: {{ article.score }}</span>
+                <div class="float-right">
+                    up votes: {{ article.metric.up_votes }}
+                    down vote: {{ article.metric.down_votes }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="col-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2>Hot Articles:</h2>
+                {% for hot_article in hot_articles %}
+                    <h5 class="card-title"><a href="/article/{{ hot_article.id }}">{{ hot_article.title }}</a></h5>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}
+    New Article
+{% endblock %}
+{% block content %}
+    <form action="/upload" method="POST" enctype='multipart/form-data'>
+        <div class="form-group">
+            <label for="title">
+                Title:
+            </label>
+            <input id="title" name="title" type="text" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="abstract">abstract:</label>
+            <textarea name="abstract" id="abstract" cols="30" rows="5" class="form-control"
+                      style="resize: none" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="highlight_part">highlight_part: </label>
+            <textarea id="highlight_part" type="text" name="highlight_part" cols="30" rows="5" class="form-control"
+                      style="resize: none" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input id="email" type="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="author">authors: </label>
+            <input id="author" type="text" name="author" class="form-control"
+                   placeholder="Please use space to separate multiple authors" required>
+        </div>
+        <div class="form-group">
+            <label for="subject">subject: </label>
+            <select name="subject" id="subject" class="form-control form-group-sm">
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+            <span>You can add new subject on <a href="/" target="_blank">index</a> page.
+                <a id="subjectsRefreshBtn" href="###">refresh subjects</a></span>
+
+        </div>
+        <div class="form-group">
+            <label for="pdf">pdf: </label>
+            <input id="pdf" name="pdf" type="file"
+                   accept="application/pdf" required>
+        </div>
+        <div class="form-group">
+            <label for="captcha">captcha: </label>
+            <input id="captcha" name="captcha" type="text" required>
+            <img id="captchaImg" src="" alt="" width="130px" height="50px">
+        </div>
+        <button type="submit" class="btn btn-primary float-left">Upload</button>
+    </form>
+    <a href="/" class="float-right"><h4>return</h4></a>
+
+    <script>
+        const img = document.getElementById('captchaImg')
+        const fileInput = document.getElementById('pdf')
+        const subjectsRefreshBtn = document.getElementById('subjectsRefreshBtn')
+        const subjectSelect = document.getElementById('subject')
+        img.setAttribute('src', '/captcha')
+        fileInput.onchange = function () {
+            const ext = this.value.substr(this.value.lastIndexOf('.')).toLowerCase()
+            if (ext !== '.pdf') {
+                this.value = null
+                alert('Please select a pdf file')
+                return
+            }
+            const fileSize = Math.round(this.files[0].size / 1024 * 100) / 100 / 1024
+            if (fileSize >= 20) {
+                this.value = null
+                alert('We only receive a file which is less than 20MB')
+            }
+        }
+        img.addEventListener('click', function () {
+            img.setAttribute('src', '/captcha?' + Math.random())
+        })
+        subjectsRefreshBtn.addEventListener('click', function () {
+            fetch('/subjects').then(response => response.json()).then(json => {
+                let innerOptions = ''
+                for (let i = 0; i < json.length; i++) {
+                    innerOptions += '<option value=' + json[i].parent.id +
+                        '>' + json[i].parent.name + '</option>'
+                }
+                subjectSelect.innerHTML = innerOptions
+            })
+        })
+    </script>
+
+{% endblock %}

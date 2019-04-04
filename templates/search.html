@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}
+    Search
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2>Article Results</h2>
+            <hr>
+            {% for article in articles %}
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="/article/{{ article.id }}">{{ article.title }}</a></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ article.author }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><a href="/user/{{ article.user.id }}">
+                        {{ article.user.email[0] + '***' +
+                        article.user.email[article.user.email.index('@'):]}}</a></h6>
+                        <h6>subject: <a href="/subject/{{ article.subject.id }}">{{ article.subject.name }}</a></h6>
+                        <p class="card-text">abstract: {{ article.abstract }}</p>
+                        <p class="card-text">highlight part: {{ article.highlight_part }}</p>
+                        <a href="/article/{{ article.id }}/pdf">Download PDF</a>
+                        <span class="text-muted ml-5">date: {{ article.date }}</span>
+                        <div class="float-right">
+                            up votes: {{ article.metric.up_votes }}
+                            down vote: {{ article.metric.down_votes }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card shadow-sm mt-5">
+        <div class="card-body">
+            <h4>Comments: </h4>
+            <hr>
+            {% for comment in comments %}
+                <div class="card shadow-sm mt-2">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">{{ comment.email[0] +
+                                '***' + comment.email[comment.email.index('@'):]}}:</h6>
+                        <p class="card-text">{{ comment.text }}</p>
+                        <a href="/article/{{ comment.article_id }}">Go To Article</a>
+                        <div class="float-right">
+                            up votes: {{ comment.up_votes }}
+                            down votes: {{ comment.down_votes }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+    <div class="float-left">
+        <label for="subjectInput">new subject: </label>
+        <select name="parentSelect" id="parentSelect">
+            {% for first_level in subjects %}
+                <option value="{{ first_level['parent'].id }}">{{ first_level['parent'].name }}</option>
+            {% endfor %}
+        </select>
+        <input id="subjectInput" style="min-width: 450px;"
+               type="text" placeholder="select a parent subject on the left and input subject name">
+        <button id="addSubjectBtn" class="btn btn-sm">add subject</button>
+    </div>
+    <a href="/upload" class="float-right">
+        <button class="btn btn-primary">New Article</button>
+    </a>
+
+    <div class="float-left">
+        {% for first_level in subjects %}
+            <h1><a href="/subject/{{ first_level['parent'].id }}">{{ first_level['parent'].name }}</a></h1>
+            <ul>
+                {% for second in first_level['children'] %}
+                    <li><h3><a href="/subject/{{ second.id }}">{{ second.name }}</a></h3></li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+
+    <script>
+        let addBtn = document.querySelector("#addSubjectBtn")
+        addBtn.addEventListener('click', function () {
+            let subjectName = document.querySelector('#subjectInput').value
+            let parentId = document.querySelector('#parentSelect').value
+            let formData = new FormData()
+            formData.append('subjectName', subjectName)
+            formData.append('parentId', parentId)
+            fetch('/subject/add', {method: 'POST', body: formData}).then(
+                response => response.text()
+            ).then(text => {
+                alert(text)
+                window.location.reload()
+            })
+        })
+    </script>
+{% endblock %}
