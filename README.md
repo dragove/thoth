@@ -1,4 +1,4 @@
-# freepaper
+# thoth
 
 #### 项目介绍
 lan hui wo ai ni

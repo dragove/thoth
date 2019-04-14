@@ -17,7 +17,7 @@ from flask_whooshalchemyplus import index_all
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/freepaper.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/thoth.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['WHOOSH_BASE'] = 'db/whoosh/base'
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
@@ -29,8 +29,11 @@ from model import *
 with app.app_context():
     index_all(app)
 
-dirties = ['fuck', 'shit', 'damn it', 'bitch']
-
+dirties = []
+with open('dirty.txt', 'r') as f:
+    words = f.readlines()
+    for word in words:
+        dirties.append(word.replace('\n', ''))
 
 # check whether the sentence has dirty words. If so, this function will return True, otherwise, return False.
 def check_dirty(sentence):
