@@ -7,6 +7,7 @@ import json
 from datetime import datetime, timedelta, date
 from io import BytesIO
 from math import log
+from util import check_dirty
 
 from PIL import Image, ImageFont, ImageDraw
 from flask import Flask, render_template, request, send_file, abort, redirect, session, make_response
@@ -29,18 +30,6 @@ from model import *
 with app.app_context():
     index_all(app)
 
-dirties = []
-with open('dirty.txt', 'r') as f:
-    words = f.readlines()
-    for word in words:
-        dirties.append(word.replace('\n', ''))
-
-# check whether the sentence has dirty words. If so, this function will return True, otherwise, return False.
-def check_dirty(sentence):
-    for dirty in dirties:
-        if dirty in sentence.lower():
-            return True
-    return False
 
 
 # Encoder for sqlalchemy object to convert the object to a json format string
