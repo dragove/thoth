@@ -1,5 +1,9 @@
-from app import db
+from app import app
 from whoosh.analysis import SimpleAnalyzer
+from flask_sqlalchemy import SQLAlchemy
+from whooshalchemy import IndexService
+
+db = SQLAlchemy(app)
 
 
 class Article(db.Model):
@@ -88,6 +92,10 @@ class ArticleIP(db.Model):
     article_id = db.Column(db.Text, db.ForeignKey('article.id'), primary_key=True)
     vote = db.Column(db.Integer, default=0)
 
+
+index_service = IndexService(config=app.config)
+index_service.register_class(Article)
+index_service.register_class(Comment)
 
 if __name__ == "__main__":
     db.drop_all()

@@ -1,4 +1,3 @@
-from app import db
 from model import *
 
 
@@ -151,6 +150,7 @@ class CommentService:
     def delete(self, comment):
         db.session.delete(comment)
         db.session.commit()
+
 
 class IPService:
     def get_by_ip(self, addr):
