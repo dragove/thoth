@@ -101,6 +101,8 @@ def add_subject():
 @app.route('/upload', methods=['POST'])
 def upload():
     form = request.form
+    if form['subject'] == "":
+        return 'Please select a subject<a href="/upload">return</a>'
     file = request.files['pdf'].read()
     filename = request.files['pdf'].filename
     split = filename.split('.')

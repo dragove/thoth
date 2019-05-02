@@ -32,6 +32,7 @@
         <div class="form-group">
             <label for="subject">subject: </label>
             <select name="subject" id="subject" class="form-control form-group-sm">
+                <option value=""></option>
                 {% for subject in subjects %}
                     <option value="{{ subject.id }}">{{ subject.name }}</option>
                 {% endfor %}
@@ -78,7 +79,7 @@
         })
         subjectsRefreshBtn.addEventListener('click', function () {
             fetch('/subjects').then(response => response.json()).then(json => {
-                let innerOptions = ''
+                let innerOptions = '<option value=""></option>'
                 for (let i = 0; i < json.length; i++) {
                     innerOptions += '<option value=' + json[i].parent.id +
                         '>' + json[i].parent.name + '</option>'
