@@ -17,7 +17,7 @@ class AlchemyEncoder(json.JSONEncoder):
                 try:
                     json.dumps(data)  # this will fail on non-encodable values, like other classes
                     fields[field] = data
-                except TypeError:  # 添加了对datetime的处理
+                except TypeError:  # process datetime
                     if isinstance(data, datetime):
                         fields[field] = data.isoformat()
                     elif isinstance(data, date):
@@ -75,6 +75,6 @@ A.make_automaton()
 
 # check whether the sentence has dirty words. If so, this function will return True, otherwise, return False.
 def check_dirty(sentence):
-    for item in A.iter(sentence):
+    for _ in A.iter(sentence):
         return True
     return False
