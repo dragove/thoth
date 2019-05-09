@@ -31,7 +31,7 @@
                 <p class="card-text">abstract: {{ article.abstract }}</p>
                 <p class="card-text">highlight part: {{ article.highlight_part }}</p>
                 <a href="/article/{{ article.id }}/pdf">Download PDF</a>
-                <span class="text-muted ml-5">date: {{ article.date }}</span>
+                <span class="text-muted ml-5">{{ article.date }}</span>
                 <span class="text-muted ml-5">score: {{ article.score }}</span>
                 <div class="float-right">
                     up votes: {{ article.metric.up_votes }}
