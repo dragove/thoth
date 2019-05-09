@@ -153,6 +153,7 @@ def upload_page():
 def article(article_id):
     article = article_service.find_by_id(article_id)
     article.score = hot(article)
+    article.comments.reverse()
     ip_id = ip_service.get_by_ip(request.remote_addr).id
     current_vote = metric_service.get_current_vote(article_id, ip_id)
     if current_vote is None:
