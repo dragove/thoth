@@ -1,11 +1,11 @@
+import random
 import re
 import time
-import random
-
-from flask import render_template, request, send_file, abort, redirect, session, make_response, Blueprint
 from io import BytesIO
+
 from PIL import Image, ImageFont, ImageDraw
-from app import app
+from flask import render_template, request, send_file, abort, redirect, session, make_response
+
 from service import *
 from util import *
 
