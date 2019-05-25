@@ -1,9 +1,14 @@
-import ahocorasick
 import json
-from sqlalchemy.ext.declarative import DeclarativeMeta
-from datetime import datetime, timedelta, date
+import smtplib
 import uuid
+from datetime import datetime, timedelta, date
+from email.header import Header
+from email.mime.text import MIMEText
+from email.utils import parseaddr, formataddr
+
+import ahocorasick
 from math import log
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 
 # Encoder for sqlalchemy object to convert the object to a json format string
@@ -78,3 +83,22 @@ def check_dirty(sentence):
     for _ in A.iter(sentence):
         return True
     return False
+
+
+def _format_addr(s):
+    name, addr = parseaddr(s)
+    return formataddr((Header(name, 'utf-8').encode(), addr))
+
+
+# usage: send_email('dove@thoth.com', 'fcjgh', 'dove@zjnu.edu.cn',
+# 'smtp.thoth.com', 'new upload', 'you have a new article upload in thoth')
+def send_email(from_addr, password, to_addr, smtp_server, subject, content):
+    msg = MIMEText(content, 'plain', 'utf-8')
+    msg['From'] = _format_addr('<%s>' % from_addr)
+    msg['To'] = _format_addr('<%s>' % to_addr)
+    msg['Subject'] = Header(subject, 'utf-8').encode()
+    server = smtplib.SMTP(smtp_server, 25)
+    server.set_debuglevel(1)
+    server.login(from_addr, password)
+    server.sendmail(from_addr, [to_addr], msg.as_string())
+    server.quit()
