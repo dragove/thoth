@@ -138,6 +138,12 @@ def upload():
                       subject_id=subject.id, metric=Metric(id=get_uuid()),
                       user=user)
     article_service.insert(article)
+    send_email(CONST.EMAIL_ADDR, CONST.EMAIL_PASSWORD, email, CONST.SMTP_SERVER,
+               '[THOTH]New upload in thoth', 'You have uploaded a new article in '
+                                             'thoth, Check the link below:<br>'
+                                             '<a href="' + CONST.SERVER_ADDR +
+               '/article/' + article.id + '" target="_blank">' + CONST.SERVER_ADDR + '/article/' +
+               article.id + '</a>')
     return redirect('/article/' + article.id)
 
 
@@ -265,7 +271,7 @@ def captcha():
         letter = random.choice(letters)
         ret += letter
         draw.text((5 + random.randint(-3, 3) + 23 * i, 5 + random.randint(-3, 3)),
-                  text=letter, fill=rndColor(), font=ImageFont.truetype('arial.ttf', 40))
+                  text=letter, fill=rndColor(), font=ImageFont.truetype('DejaVuSansMono.ttf', 40))
     for i in range(4):
         x1 = random.randint(0, width / 2)
         y1 = random.randint(0, height / 2)
@@ -282,4 +288,4 @@ def captcha():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)

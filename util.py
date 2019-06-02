@@ -37,6 +37,14 @@ class AlchemyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
+# Input your server information as consts in this class
+class CONST:
+    SERVER_ADDR = ''
+    SMTP_SERVER = ''
+    EMAIL_ADDR = ''
+    EMAIL_PASSWORD = ''
+
+
 epoch = datetime(1970, 1, 1)
 
 
@@ -93,7 +101,7 @@ def _format_addr(s):
 # usage: send_email('dove@thoth.com', 'fcjgh', 'dove@zjnu.edu.cn',
 # 'smtp.thoth.com', 'new upload', 'you have a new article upload in thoth')
 def send_email(from_addr, password, to_addr, smtp_server, subject, content):
-    msg = MIMEText(content, 'plain', 'utf-8')
+    msg = MIMEText(content, 'html', 'utf-8')
     msg['From'] = _format_addr('<%s>' % from_addr)
     msg['To'] = _format_addr('<%s>' % to_addr)
     msg['Subject'] = Header(subject, 'utf-8').encode()
