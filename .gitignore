@@ -13,6 +13,9 @@ __pycache__/
 db/
 .idea/
 
+# whooshee
+whooshee/
+
 # Distribution / packaging
 .Python
 build/

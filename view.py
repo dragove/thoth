@@ -29,8 +29,7 @@ def home():
     subjects = []
     first_level = subject_service.find_children(Subject(id='1'))
     for single_subject in first_level:
-        second = {'parent': single_subject,
-                  'children': []}
+        second = {'parent': single_subject, 'children': []}
         second_level = subject_service.find_children(single_subject)
         for s in second_level:
             second['children'].append(s)
@@ -66,8 +65,12 @@ def subject(subject_id):
         hot_articles = hot_articles[0:10]
     parents = subject_service.find_parents(subject)
     children = subject_service.find_children(subject)
-    return render_template('subject.html', subject=subject, hot_articles=hot_articles,
-                           articles=articles, parents=parents, children=children)
+    return render_template('subject.html',
+                           subject=subject,
+                           hot_articles=hot_articles,
+                           articles=articles,
+                           parents=parents,
+                           children=children)
 
 
 # add a subject
@@ -91,8 +94,10 @@ def add_subject():
         without_space += word
     similar_name += ' ' + cap_letter.lower() + ' ' + without_space.lower()
     if subject_service.find_by_name(subject_name) is None:
-        subject_service.insert(Subject(id=get_uuid(), name=subject_name,
-                                       similar_name=similar_name), parent_id)
+        subject_service.insert(
+            Subject(id=get_uuid(),
+                    name=subject_name,
+                    similar_name=similar_name), parent_id)
         return 'Insert Successfully'
     return 'This subject is already there'
 
@@ -131,19 +136,25 @@ def upload():
         if time.time() - session['last_article_upload'] < 300:
             return 'You submit articles too frequently, please upload later!!!'
     session['last_article_upload'] = time.time()
-    article = Article(id=get_uuid(), pdf=file, title=form['title'],
-                      date=time.strftime('%Y-%m-%d %H:%M', time.localtime(time.time())),
-                      abstract=form['abstract'], author=form['author'],
+    article = Article(id=get_uuid(),
+                      pdf=file,
+                      title=form['title'],
+                      date=time.strftime('%Y-%m-%d %H:%M',
+                                         time.localtime(time.time())),
+                      abstract=form['abstract'],
+                      author=form['author'],
                       highlight_part=form['highlight_part'],
-                      subject_id=subject.id, metric=Metric(id=get_uuid()),
+                      subject_id=subject.id,
+                      metric=Metric(id=get_uuid()),
                       user=user)
     article_service.insert(article)
-    send_email(CONST.EMAIL_ADDR, CONST.EMAIL_PASSWORD, email, CONST.SMTP_SERVER,
-               '[THOTH]New upload in thoth', 'You have uploaded a new article in '
-                                             'thoth, Check the link below:<br>'
-                                             '<a href="' + CONST.SERVER_ADDR +
-               '/article/' + article.id + '" target="_blank">' + CONST.SERVER_ADDR + '/article/' +
-               article.id + '</a>')
+    send_email(
+        CONST.EMAIL_ADDR, CONST.EMAIL_PASSWORD, email, CONST.SMTP_SERVER,
+        '[THOTH]New upload in thoth', 'You have uploaded a new article in '
+        'thoth, Check the link below:<br>'
+        '<a href="' + CONST.SERVER_ADDR + '/article/' + article.id +
+        '" target="_blank">' + CONST.SERVER_ADDR + '/article/' + article.id +
+        '</a>')
     return redirect('/article/' + article.id)
 
 
@@ -198,7 +209,11 @@ def comment(article_id):
         if time.time() - session['last_comment_upload'] < 300:
             return 'Please do not comment article too frequently'
     session['last_comment_upload'] = time.time()
-    comment_service.insert(Comment(id=get_uuid(), email=email, text=comment_text, article_id=article_id))
+    comment_service.insert(
+        Comment(id=get_uuid(),
+                email=email,
+                text=comment_text,
+                article_id=article_id))
     metric_service.add_comments(article_id)
     return 'comment post successfully'
 
@@ -226,7 +241,10 @@ def pdf(article_id):
     bio = BytesIO()
     bio.write(article.pdf)
     bio.seek(0)
-    return send_file(bio, attachment_filename="%s.pdf" % article.title, as_attachment=True, mimetype='application/pdf')
+    return send_file(bio,
+                     attachment_filename="%s.pdf" % article.title,
+                     as_attachment=True,
+                     mimetype='application/pdf')
 
 
 # return donate page
@@ -239,6 +257,8 @@ def donate():
 @app.route('/search')
 def search():
     content = request.args['content']
+    if len(content) < 4:
+        return '<p>Search Content is too short, it should be longer than 4 characters</p>'
     articles = article_service.search(content)
     comments = comment_service.search(content)
     if content == '':
@@ -252,14 +272,19 @@ def user_page(user_id):
     user = user_service.find_by_id(user_id)
     articles = article_service.find_by_user(user)
     comments = comment_service.find_by_email(user.email)
-    return render_template('user.html', articles=articles, user=user, comments=comments)
+    return render_template('user.html',
+                           articles=articles,
+                           user=user,
+                           comments=comments)
 
 
 # this function will return a captcha image every time when it is requested.
 @app.route('/captcha')
 def captcha():
     def rndColor():
-        return random.randint(32, 127), random.randint(32, 127), random.randint(32, 127)
+        return random.randint(32, 127), random.randint(32,
+                                                       127), random.randint(
+                                                           32, 127)
 
     letters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
     ret = ''
@@ -270,8 +295,11 @@ def captcha():
     for i in range(4):
         letter = random.choice(letters)
         ret += letter
-        draw.text((5 + random.randint(-3, 3) + 23 * i, 5 + random.randint(-3, 3)),
-                  text=letter, fill=rndColor(), font=ImageFont.truetype('DejaVuSansMono.ttf', 40))
+        draw.text(
+            (5 + random.randint(-3, 3) + 23 * i, 5 + random.randint(-3, 3)),
+            text=letter,
+            fill=rndColor(),
+            font=ImageFont.truetype('DejaVuSansMono.ttf', 40))
     for i in range(4):
         x1 = random.randint(0, width / 2)
         y1 = random.randint(0, height / 2)

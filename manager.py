@@ -15,7 +15,9 @@ if __name__ == '__main__':
             else:
                 split = command.split()
                 if len(split) != 3:
-                    print('There are some error on your command, try to use man to get help')
+                    print(
+                        'There are some error on your command, try to use man to get help'
+                    )
                     continue
                 else:
                     if split[0] == 'hide':
@@ -48,8 +50,12 @@ if __name__ == '__main__':
                             comment_service.delete(comment)
                             print('delete successfully')
                         else:
-                            print('There are some error on your command, try to use man to get help')
+                            print(
+                                'There are some error on your command, try to use man to get help'
+                            )
                             continue
                     else:
-                        print('There are some error on your command, try to use man to get help')
+                        print(
+                            'There are some error on your command, try to use man to get help'
+                        )
                         continue

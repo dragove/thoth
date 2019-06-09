@@ -17,10 +17,15 @@ class AlchemyEncoder(json.JSONEncoder):
         if isinstance(obj.__class__, DeclarativeMeta):
             # an SQLAlchemy class
             fields = {}
-            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
+            for field in [
+                    x for x in dir(obj)
+                    if not x.startswith('_') and x != 'metadata'
+            ]:
                 data = obj.__getattribute__(field)
                 try:
-                    json.dumps(data)  # this will fail on non-encodable values, like other classes
+                    json.dumps(
+                        data
+                    )  # this will fail on non-encodable values, like other classes
                     fields[field] = data
                 except TypeError:  # process datetime
                     if isinstance(data, datetime):
@@ -28,7 +33,8 @@ class AlchemyEncoder(json.JSONEncoder):
                     elif isinstance(data, date):
                         fields[field] = data.isoformat()
                     elif isinstance(data, timedelta):
-                        fields[field] = (datetime.min + data).time().isoformat()
+                        fields[field] = (datetime.min +
+                                         data).time().isoformat()
                     else:
                         fields[field] = None
             # a json-encodable dict
@@ -63,8 +69,8 @@ def hot(article):
     s = ups / max((ups + downs), 1) * (visits + comments)
     order = log(max(abs(s), 1), 2)
     dates = date.split(' ')[0].split('-')
-    seconds = epoch_seconds(datetime(int(dates[0]), int(dates[1]),
-                                     int(dates[2]))) - 1134028003
+    seconds = epoch_seconds(
+        datetime(int(dates[0]), int(dates[1]), int(dates[2]))) - 1134028003
     return round(order + s * seconds / 450000000, 7)
 
 

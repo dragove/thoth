@@ -1,15 +1,14 @@
 from app import app
-from whoosh.analysis import SimpleAnalyzer
 from flask_sqlalchemy import SQLAlchemy
-from whooshalchemy import IndexService
+from flask_whooshee import Whooshee
 
 db = SQLAlchemy(app)
+whooshee = Whooshee(app)
 
 
+@whooshee.register_model('title', 'abstract', 'highlight_part', 'author')
 class Article(db.Model):
     __tablename__ = 'article'
-    __searchable__ = ['title', 'abstract', 'highlight_part', 'author']
-    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Text, primary_key=True)
     title = db.Column(db.Text)
     abstract = db.Column(db.Text)
@@ -27,10 +26,9 @@ class Article(db.Model):
     pdf = db.Column(db.BLOB)
 
 
+@whooshee.register_model('text')
 class Comment(db.Model):
     __tablename__ = 'comment'
-    __searchable__ = ['text']
-    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Text, primary_key=True)
     email = db.Column(db.Text)
     text = db.Column(db.Text)
@@ -49,8 +47,12 @@ class User(db.Model):
 
 class SubjectTree(db.Model):
     __tablename__ = 'subject_tree'
-    parent_id = db.Column(db.Text, db.ForeignKey('subject.id'), primary_key=True)
-    child_id = db.Column(db.Text, db.ForeignKey('subject.id'), primary_key=True)
+    parent_id = db.Column(db.Text,
+                          db.ForeignKey('subject.id'),
+                          primary_key=True)
+    child_id = db.Column(db.Text,
+                         db.ForeignKey('subject.id'),
+                         primary_key=True)
 
 
 class Subject(db.Model):
@@ -82,20 +84,22 @@ class IP(db.Model):
 class CommentIP(db.Model):
     __tablename__ = 'comment_ip'
     ip_id = db.Column(db.Text, db.ForeignKey('ip.id'), primary_key=True)
-    comment_id = db.Column(db.Text, db.ForeignKey('comment.id'), primary_key=True)
+    comment_id = db.Column(db.Text,
+                           db.ForeignKey('comment.id'),
+                           primary_key=True)
     vote = db.Column(db.Integer, default=0)
 
 
 class ArticleIP(db.Model):
     __tablename__ = 'article_ip'
     ip_id = db.Column(db.Text, db.ForeignKey('ip.id'), primary_key=True)
-    article_id = db.Column(db.Text, db.ForeignKey('article.id'), primary_key=True)
+    article_id = db.Column(db.Text,
+                           db.ForeignKey('article.id'),
+                           primary_key=True)
     vote = db.Column(db.Integer, default=0)
 
 
-index_service = IndexService(config=app.config)
-index_service.register_class(Article)
-index_service.register_class(Comment)
+whooshee.reindex()
 
 if __name__ == "__main__":
     db.drop_all()

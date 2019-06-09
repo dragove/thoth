@@ -7,7 +7,8 @@ class ArticleService:
         return articles
 
     def find_by_subject(self, subject):
-        articles = Article.query.filter_by(hidden=0).filter_by(subject=subject).order_by(Article.date.desc())
+        articles = Article.query.filter_by(hidden=0).filter_by(
+            subject=subject).order_by(Article.date.desc())
         return articles
 
     def find_by_id(self, id):
@@ -19,7 +20,7 @@ class ArticleService:
         db.session.commit()
 
     def search(self, content):
-        articles = Article.query.filter_by(hidden=0).whoosh_search(content)
+        articles = Article.query.filter_by(hidden=0).whooshee_search(content)
         return articles
 
     def find_by_user(self, user):
@@ -63,7 +64,8 @@ class SubjectService:
         return subject
 
     def find_similar_by_name(self, name):
-        subject = Subject.query.filter(Subject.similar_name.like('%' + name + '%')).first()
+        subject = Subject.query.filter(
+            Subject.similar_name.like('%' + name + '%')).first()
         return subject
 
     def insert(self, subject, parent_id):
@@ -101,7 +103,8 @@ class CommentService:
         comment = self.find_by_id(comment_id)
         current = self.get_current_vote(comment_id, ip_id)
         if current is None:
-            db.session.add(CommentIP(ip_id=ip_id, comment_id=comment_id, vote=1))
+            db.session.add(
+                CommentIP(ip_id=ip_id, comment_id=comment_id, vote=1))
             comment.up_votes += 1
         else:
             if current.vote == 1:
@@ -120,7 +123,8 @@ class CommentService:
         comment = self.find_by_id(comment_id)
         current = self.get_current_vote(comment_id, ip_id)
         if current is None:
-            db.session.add(CommentIP(ip_id=ip_id, comment_id=comment_id, vote=2))
+            db.session.add(
+                CommentIP(ip_id=ip_id, comment_id=comment_id, vote=2))
             comment.down_votes += 1
         else:
             if current.vote == 2:
@@ -144,7 +148,7 @@ class CommentService:
         return current
 
     def search(self, content):
-        comments = Comment.query.whoosh_search(content)
+        comments = Comment.query.whooshee_search(content)
         return comments
 
     def delete(self, comment):
@@ -177,7 +181,8 @@ class MetricService:
         current = self.get_current_vote(article_id, ip_id)
         metric = Metric.query.filter_by(article_id=article_id).first()
         if current is None:
-            db.session.add(ArticleIP(ip_id=ip_id, article_id=article_id, vote=1))
+            db.session.add(
+                ArticleIP(ip_id=ip_id, article_id=article_id, vote=1))
             metric.up_votes += 1
         else:
             if current.vote == 1:
@@ -196,7 +201,8 @@ class MetricService:
         current = self.get_current_vote(article_id, ip_id)
         metric = Metric.query.filter_by(article_id=article_id).first()
         if current is None:
-            db.session.add(ArticleIP(ip_id=ip_id, article_id=article_id, vote=2))
+            db.session.add(
+                ArticleIP(ip_id=ip_id, article_id=article_id, vote=2))
             metric.down_votes += 1
         else:
             if current.vote == 2:
